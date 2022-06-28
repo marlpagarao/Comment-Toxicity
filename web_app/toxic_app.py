@@ -1,10 +1,13 @@
 
 from unicodedata import category
 from unittest import result
+from warnings import catch_warnings
 from flask import Flask, render_template, url_for, request, jsonify
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import pickle
 import numpy as np
+import pandas as pd
+from comment_scraper import scrape_comments_with_replies
 
 app = Flask(__name__)
 
@@ -38,63 +41,70 @@ def predict():
     user_input = request.form['text']
     data = [user_input]
 
-    vect = tox.transform(data)
-    pred_tox = tox_model.predict_proba(vect)[:, 1]
+    df=scrape_comments_with_replies(user_input)
 
-    vect = sev.transform(data)
-    pred_sev = sev_model.predict_proba(vect)[:, 1]
+    results_tally = {"Toxic": 0, 'Severe Toxic': 0, 'Obscene': 0,
+                'Insult': 0, 'Threat': 0, 'Identity Hate': 0, 'Non Toxic':0}
 
-    vect = obs.transform(data)
-    pred_obs = obs_model.predict_proba(vect)[:, 1]
+    for index, row in df['Comment'].items():
+        row=[row]
+        vect = tox.transform(row)
+        pred_tox = tox_model.predict_proba(vect)[:, 1]
 
-    vect = thr.transform(data)
-    pred_thr = thr_model.predict_proba(vect)[:, 1]
+        vect = sev.transform(row)
+        pred_sev = sev_model.predict_proba(vect)[:, 1]
 
-    vect = ins.transform(data)
-    pred_ins = ins_model.predict_proba(vect)[:, 1]
+        vect = obs.transform(row)
+        pred_obs = obs_model.predict_proba(vect)[:, 1]
 
-    vect = ide.transform(data)
-    pred_ide = ide_model.predict_proba(vect)[:, 1]
+        vect = thr.transform(row)
+        pred_thr = thr_model.predict_proba(vect)[:, 1]
 
-    results = {"Toxic": [], 'Severe Toxic': [], 'Obscene': [],
-               'Insult': [], 'Threat': [], 'Identity Hate': []}
+        vect = ins.transform(row)
+        pred_ins = ins_model.predict_proba(vect)[:, 1]
 
-    out_tox = round(pred_tox[0], 2)
-    results['Toxic'] = out_tox
+        vect = ide.transform(row)
+        pred_ide = ide_model.predict_proba(vect)[:, 1]
 
-    out_sev = round(pred_sev[0], 2)
-    results['Severe Toxic'] = out_sev
+        results = {"Toxic": [], 'Severe Toxic': [], 'Obscene': [],
+                'Insult': [], 'Threat': [], 'Identity Hate': []}
 
-    out_obs = round(pred_obs[0], 2)
-    results['Obscene'] = out_obs
+        out_tox = round(pred_tox[0], 2)
+        results['Toxic'] = out_tox
 
-    out_ins = round(pred_ins[0], 2)
-    results['Insult'] = out_ins
+        out_sev = round(pred_sev[0], 2)
+        results['Severe Toxic'] = out_sev
 
-    out_thr = round(pred_thr[0], 2)
-    results['Threat'] = out_thr
+        out_obs = round(pred_obs[0], 2)
+        results['Obscene'] = out_obs
 
-    out_ide = round(pred_ide[0], 2)
-    results['Identity Hate'] = out_ide
+        out_ins = round(pred_ins[0], 2)
+        results['Insult'] = out_ins
 
-    result_values = list(results.values())
+        out_thr = round(pred_thr[0], 2)
+        results['Threat'] = out_thr
 
-    if all(i <= 0.30 for i in result_values):
-        category = 'Non Toxic'
-        print(category)
-    else:
-        category = max(zip(results.values(), results.keys()))[1]
-        print(category)
+        out_ide = round(pred_ide[0], 2)
+        results['Identity Hate'] = out_ide
+
+        result_values = list(results.values())
+
+        if all(i <= 0.30 for i in result_values):
+            category = 'Non Toxic'
+            results_tally['Non Toxic']+=1
+        else:
+            category = max(zip(results.values(), results.keys()))[1]
+            results_tally[category]+=1
 
     return render_template('index_toxic.html',
                            data='You Entered:' + user_input,
-                           pred_tox='Prob (Toxic): {}'.format(out_tox),
-                           pred_sev='Prob (Severe Toxic): {}'.format(out_sev),
-                           pred_obs='Prob (Obscene): {}'.format(out_obs),
-                           pred_ins='Prob (Insult): {}'.format(out_ins),
-                           pred_thr='Prob (Threat): {}'.format(out_thr),
-                           pred_ide='Prob (Identity Hate): {}'.format(out_ide),
-                           category=category)
+                           pred_tox='Prob (Toxic): {}'.format(results_tally['Toxic']),
+                           pred_sev='Prob (Severe Toxic): {}'.format(results_tally['Severe Toxic']),
+                           pred_obs='Prob (Obscene): {}'.format(results_tally['Obscene']),
+                           pred_ins='Prob (Insult): {}'.format(results_tally['Insult']),
+                           pred_thr='Prob (Threat): {}'.format(results_tally['Threat']),
+                           pred_ide='Prob (Identity Hate): {}'.format(results_tally['Identity Hate']),
+                           category='Prob (Non Toxic): {}'.format(results_tally['Non Toxic']))
 
 
 # Server reloads itself if code changes so no need to keep restarting:

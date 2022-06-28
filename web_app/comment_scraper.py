@@ -1,15 +1,12 @@
 
 
 def scrape_comments_with_replies(video_id):
+    import pandas as pd
     #API input: AIzaSyAIe3mlQp4ugpbO-RwUFmy6CJNitQXswHc
     api_key = "AIzaSyAIe3mlQp4ugpbO-RwUFmy6CJNitQXswHc" # Insert your Api key here.
 
     from googleapiclient.discovery import build
     youtube = build('youtube', 'v3', developerKey=api_key)
-
-    import pandas as pd
-
-
 
     box = [['Name', 'Comment', 'Time', 'Likes', 'Reply Count']]
     data = youtube.commentThreads().list(part='snippet', videoId=video_id, maxResults='100', textFormat="plainText").execute()
