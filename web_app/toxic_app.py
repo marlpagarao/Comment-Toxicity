@@ -41,13 +41,13 @@ def predict():
     user_input = request.form['text']
     data = [user_input]
 
-    df=scrape_comments_with_replies(user_input)
+    df = scrape_comments_with_replies(user_input)
 
     results_tally = {"Toxic": 0, 'Severe Toxic': 0, 'Obscene': 0,
-                'Insult': 0, 'Threat': 0, 'Identity Hate': 0, 'Non Toxic':0}
+                     'Insult': 0, 'Threat': 0, 'Identity Hate': 0, 'Non Toxic': 0}
 
     for index, row in df['Comment'].items():
-        row=[row]
+        row = [row]
         vect = tox.transform(row)
         pred_tox = tox_model.predict_proba(vect)[:, 1]
 
@@ -67,7 +67,7 @@ def predict():
         pred_ide = ide_model.predict_proba(vect)[:, 1]
 
         results = {"Toxic": [], 'Severe Toxic': [], 'Obscene': [],
-                'Insult': [], 'Threat': [], 'Identity Hate': []}
+                   'Insult': [], 'Threat': [], 'Identity Hate': []}
 
         out_tox = round(pred_tox[0], 2)
         results['Toxic'] = out_tox
@@ -91,20 +91,35 @@ def predict():
 
         if all(i <= 0.30 for i in result_values):
             category = 'Non Toxic'
-            results_tally['Non Toxic']+=1
+            results_tally['Non Toxic'] += 1
         else:
             category = max(zip(results.values(), results.keys()))[1]
-            results_tally[category]+=1
+            results_tally[category] += 1
 
     return render_template('index_toxic.html',
                            data='You Entered:' + user_input,
-                           pred_tox='Prob (Toxic): {}'.format(results_tally['Toxic']),
-                           pred_sev='Prob (Severe Toxic): {}'.format(results_tally['Severe Toxic']),
-                           pred_obs='Prob (Obscene): {}'.format(results_tally['Obscene']),
-                           pred_ins='Prob (Insult): {}'.format(results_tally['Insult']),
-                           pred_thr='Prob (Threat): {}'.format(results_tally['Threat']),
-                           pred_ide='Prob (Identity Hate): {}'.format(results_tally['Identity Hate']),
-                           category='Prob (Non Toxic): {}'.format(results_tally['Non Toxic']))
+                           pred_tox='Prob (Toxic): {}'.format(
+                               results_tally['Toxic']),
+                           pred_sev='Prob (Severe Toxic): {}'.format(
+                               results_tally['Severe Toxic']),
+                           pred_obs='Prob (Obscene): {}'.format(
+                               results_tally['Obscene']),
+                           pred_ins='Prob (Insult): {}'.format(
+                               results_tally['Insult']),
+                           pred_thr='Prob (Threat): {}'.format(
+                               results_tally['Threat']),
+                           pred_ide='Prob (Identity Hate): {}'.format(
+                               results_tally['Identity Hate']),
+                           category='Prob (Non Toxic): {}'.format(
+                               results_tally['Non Toxic']),
+                           pred_tox_num=results_tally['Toxic'],
+                           pred_sev_num=results_tally['Severe Toxic'],
+                           pred_obs_num=results_tally['Obscene'],
+                           pred_ins_num=results_tally['Insult'],
+                           pred_thr_num=results_tally['Threat'],
+                           pred_ide_num=results_tally['Identity Hate'],
+                           pred_non_num=results_tally['Non Toxic']
+                           )
 
 
 # Server reloads itself if code changes so no need to keep restarting:

@@ -7,6 +7,7 @@
 
   <title>Comment Toxicity</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
 </head>
 
 
@@ -24,16 +25,51 @@
     <input type="submit" class="fadeIn fourth" value="Predict">
     </form>
 
-    <h3>
-    {{ data }} <br><br>
-    {{ pred_tox }} <br>
-    {{ pred_sev }} <br>
-    {{ pred_obs }} <br>
-    {{ pred_ins }} <br>
-    {{ pred_thr }} <br>
-    {{ pred_ide }} <br>
-    {{ category }}
-    </h3>
+    <div class="chart">
+      <h2>Breakdown of Comments</h2>
+    <canvas id="doughnutChart" width="200" height="100"></canvas>
+    </div>
+    <script>
+      var ctx = document.getElementById("doughnutChart").getContext("2d");
+      var doughnutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data:{
+          labels:['Toxic',
+          'Severe Toxic', 
+          'Obscene', 
+          'Insult',
+          'Threat',
+          'Identity Hate',
+          'Non Toxic'
+          ],
+          datasets: [{
+            label: 'Breakdown of Comments',
+            data: {{[pred_tox_num,
+            pred_sev_num,
+            pred_obs_num,
+            pred_ins_num,
+            pred_thr_num,
+            pred_ide_num,
+            pred_non_num
+          ]}},
+          backgroundColor: [
+          'rgb(194, 222, 209)',
+          'rgb(236, 229, 199)',
+          'rgb(205, 194, 174)',
+          'rgb(53, 66, 89)',
+          'rgb(7, 34, 39)',
+          'rgb(53, 133, 139)',
+          'rgb(79, 189, 186)'
+          ]
+          }]
+
+
+        }
+      })
+    </script>
+
+
+
     </div>
 </div>
 
