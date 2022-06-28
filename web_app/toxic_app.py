@@ -9,42 +9,19 @@ import numpy as np
 app = Flask(__name__)
 
 # Load the TF-IDF vocabulary specific to the category
-with open(r"toxic_vect.pkl", "rb") as f:
-    tox = pickle.load(f)
+tox = pickle.load(open("toxic_vect.pkl", "rb"))
+sev = pickle.load(open("severe_toxic_vect.pkl", "rb"))
+obs = pickle.load(open("obscene_vect.pkl", "rb"))
+ins = pickle.load(open("insult_vect.pkl", "rb"))
+thr = pickle.load(open("threat_vect.pkl", "rb"))
+ide = pickle.load(open("identity_hate_vect.pkl", "rb"))
 
-with open(r"severe_toxic_vect.pkl", "rb") as f:
-    sev = pickle.load(f)
-
-with open(r"obscene_vect.pkl", "rb") as f:
-    obs = pickle.load(f)
-
-with open(r"insult_vect.pkl", "rb") as f:
-    ins = pickle.load(f)
-
-with open(r"threat_vect.pkl", "rb") as f:
-    thr = pickle.load(f)
-
-with open(r"identity_hate_vect.pkl", "rb") as f:
-    ide = pickle.load(f)
-
-# Load the pickled RDF models
-with open(r"toxic_model.pkl", "rb") as f:
-    tox_model = pickle.load(f)
-
-with open(r"severe_toxic_model.pkl", "rb") as f:
-    sev_model = pickle.load(f)
-
-with open(r"obscene_model.pkl", "rb") as f:
-    obs_model = pickle.load(f)
-
-with open(r"insult_model.pkl", "rb") as f:
-    ins_model = pickle.load(f)
-
-with open(r"threat_model.pkl", "rb") as f:
-    thr_model = pickle.load(f)
-
-with open(r"identity_hate_model.pkl", "rb") as f:
-    ide_model = pickle.load(f)
+tox_model = pickle.load(open("toxic_model.pkl", "rb"))
+sev_model = pickle.load(open("severe_toxic_model.pkl", "rb"))
+obs_model = pickle.load(open("obscene_model.pkl", "rb"))
+ins_model = pickle.load(open("insult_model.pkl", "rb"))
+thr_model = pickle.load(open("threat_model.pkl", "rb"))
+ide_model = pickle.load(open("identity_hate_model.pkl", "rb"))
 
 # Render the HTML file for the home page
 
@@ -79,41 +56,35 @@ def predict():
     vect = ide.transform(data)
     pred_ide = ide_model.predict_proba(vect)[:, 1]
 
-    results={"Toxic":[],'Severe Toxic':[],'Obscene':[],'Insult':[],'Threat':[],'Identity Hate':[]}
-
+    results = {"Toxic": [], 'Severe Toxic': [], 'Obscene': [],
+               'Insult': [], 'Threat': [], 'Identity Hate': []}
 
     out_tox = round(pred_tox[0], 2)
-    results['Toxic']=out_tox
+    results['Toxic'] = out_tox
 
     out_sev = round(pred_sev[0], 2)
-    results['Severe Toxic']=out_sev
+    results['Severe Toxic'] = out_sev
 
     out_obs = round(pred_obs[0], 2)
-    results['Obscene']=out_obs
+    results['Obscene'] = out_obs
 
     out_ins = round(pred_ins[0], 2)
-    results['Insult']=out_ins
+    results['Insult'] = out_ins
 
     out_thr = round(pred_thr[0], 2)
-    results['Threat']=out_thr
+    results['Threat'] = out_thr
 
     out_ide = round(pred_ide[0], 2)
-    results['Identity Hate']=out_ide
+    results['Identity Hate'] = out_ide
 
+    result_values = list(results.values())
 
-
-
-    result_values= list(results.values())
-
-    if all( i<=0.30 for i in result_values):
-        category='Non Toxic'
+    if all(i <= 0.30 for i in result_values):
+        category = 'Non Toxic'
         print(category)
     else:
-        category=max(zip(results.values(), results.keys()))[1]
+        category = max(zip(results.values(), results.keys()))[1]
         print(category)
-    
-
-
 
     return render_template('index_toxic.html',
                            data='You Entered:' + user_input,
