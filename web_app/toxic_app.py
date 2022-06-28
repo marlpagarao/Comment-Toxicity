@@ -1,4 +1,6 @@
 
+from unicodedata import category
+from unittest import result
 from flask import Flask, render_template, url_for, request, jsonify
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import pickle
@@ -81,25 +83,34 @@ def predict():
 
 
     out_tox = round(pred_tox[0], 2)
-    results['Toxic'].append(out_tox)
+    results['Toxic']=out_tox
 
     out_sev = round(pred_sev[0], 2)
-    results['Severe Toxic'].append(out_sev)
+    results['Severe Toxic']=out_sev
 
     out_obs = round(pred_obs[0], 2)
-    results['Obscene'].append(out_obs)
+    results['Obscene']=out_obs
 
     out_ins = round(pred_ins[0], 2)
-    results['Insult'].append(out_ins)
+    results['Insult']=out_ins
 
     out_thr = round(pred_thr[0], 2)
-    results['Threat'].append(out_thr)
+    results['Threat']=out_thr
 
     out_ide = round(pred_ide[0], 2)
-    results['Identity Hate'].append(out_sev)
+    results['Identity Hate']=out_ide
 
-    category=max(zip(results.values(), results.keys()))[1]
-    print(category)
+
+
+
+    result_values= list(results.values())
+
+    if all( i<=0.30 for i in result_values):
+        category='Non Toxic'
+        print(category)
+    else:
+        category=max(zip(results.values(), results.keys()))[1]
+        print(category)
     
 
 
