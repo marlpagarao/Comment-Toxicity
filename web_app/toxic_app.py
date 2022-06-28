@@ -77,14 +77,32 @@ def predict():
     vect = ide.transform(data)
     pred_ide = ide_model.predict_proba(vect)[:, 1]
 
-    out_tox = round(pred_tox[0], 2)
-    out_sev = round(pred_sev[0], 2)
-    out_obs = round(pred_obs[0], 2)
-    out_ins = round(pred_ins[0], 2)
-    out_thr = round(pred_thr[0], 2)
-    out_ide = round(pred_ide[0], 2)
+    results={"Toxic":[],'Severe Toxic':[],'Obscene':[],'Insult':[],'Threat':[],'Identity Hate':[]}
 
-    print(out_tox)
+
+    out_tox = round(pred_tox[0], 2)
+    results['Toxic'].append(out_tox)
+
+    out_sev = round(pred_sev[0], 2)
+    results['Severe Toxic'].append(out_sev)
+
+    out_obs = round(pred_obs[0], 2)
+    results['Obscene'].append(out_obs)
+
+    out_ins = round(pred_ins[0], 2)
+    results['Insult'].append(out_ins)
+
+    out_thr = round(pred_thr[0], 2)
+    results['Threat'].append(out_thr)
+
+    out_ide = round(pred_ide[0], 2)
+    results['Identity Hate'].append(out_sev)
+
+    category=max(zip(results.values(), results.keys()))[1]
+    print(category)
+    
+
+
 
     return render_template('index_toxic.html',
                            data='You Entered:' + user_input,
@@ -93,8 +111,8 @@ def predict():
                            pred_obs='Prob (Obscene): {}'.format(out_obs),
                            pred_ins='Prob (Insult): {}'.format(out_ins),
                            pred_thr='Prob (Threat): {}'.format(out_thr),
-                           pred_ide='Prob (Identity Hate): {}'.format(out_ide)
-                           )
+                           pred_ide='Prob (Identity Hate): {}'.format(out_ide),
+                           category=category)
 
 
 # Server reloads itself if code changes so no need to keep restarting:
