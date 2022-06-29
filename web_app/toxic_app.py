@@ -7,6 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import pickle
 import numpy as np
 import pandas as pd
+import urllib.parse as urlparse
 from comment_scraper import scrape_comments_with_replies
 
 app = Flask(__name__)
@@ -38,8 +39,13 @@ def home():
 def predict():
 
     # Take a string input from user
+
     user_input = request.form['text']
-    data = [user_input]
+    # data = [user_input]
+
+    url_data = urlparse.urlparse(user_input)
+    query = urlparse.parse_qs(url_data.query)
+    user_input = query["v"][0]
 
     df = scrape_comments_with_replies(user_input)
 
