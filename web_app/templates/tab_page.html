@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<!--From https://codepen.io/frytyler/pen/EGdtg-->
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Tab</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+
+<body onload="myFunction()">
+
+
+
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Tabs Titles -->
+    <h1>Is your Comment Toxic?</h1>
+
+     <!-- Main Input For Receiving Query to our ML -->
+    <form action="{{ url_for('get')}}"method="POST">
+    <a href="/back">Previous Tab</a>    
+    <input id='text' type="text" name="text" placeholder="Enter your text" required="required" size="25" style="font-size:25px;"/>
+    <input type="submit" class="fadeIn fourth" value="Predict">
+    </form>
+
+    <h3>
+    {{ data }} <br><br>
+    {{ pred_tox }} <br>
+    {{ pred_sev }} <br>
+    {{ pred_obs }} <br>
+    {{ pred_ins }} <br>
+    {{ pred_thr }} <br>
+    {{ pred_ide }}
+    </h3>
+    </div>
+</div>
+
+</body>
+</html>

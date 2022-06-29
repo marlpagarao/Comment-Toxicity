@@ -4,6 +4,7 @@ from unittest import result
 from warnings import catch_warnings
 from flask import Flask, render_template, url_for, request, jsonify
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
 import pickle
 import numpy as np
 import pandas as pd
@@ -33,6 +34,14 @@ ide_model = pickle.load(open("identity_hate_model.pkl", "rb"))
 @app.route("/")
 def home():
     return render_template('index_toxic.html')
+
+@app.route("/tab")
+def tab():
+    return render_template('tab_page.html')
+
+@app.route("/back")
+def back():
+    return render_template('home_page.html')
 
 
 @app.route("/predict", methods=['POST'])
@@ -125,6 +134,50 @@ def predict():
                            pred_thr_num=results_tally['Threat'],
                            pred_ide_num=results_tally['Identity Hate'],
                            pred_non_num=results_tally['Non Toxic']
+                           )
+
+@app.route("/comment", methods=['POST','GET'])
+def get():
+
+    # Take a string input from user
+    user_input = request.form['text']
+    data = [user_input]
+
+    vect = tox.transform(data)
+    pred_tox = tox_model.predict_proba(vect)[:, 1]
+
+    vect = sev.transform(data)
+    pred_sev = sev_model.predict_proba(vect)[:, 1]
+
+    vect = obs.transform(data)
+    pred_obs = obs_model.predict_proba(vect)[:, 1]
+
+    vect = thr.transform(data)
+    pred_thr = thr_model.predict_proba(vect)[:, 1]
+
+    vect = ins.transform(data)
+    pred_ins = ins_model.predict_proba(vect)[:, 1]
+
+    vect = ide.transform(data)
+    pred_ide = ide_model.predict_proba(vect)[:, 1]
+
+    out_tox = round(pred_tox[0], 2)
+    out_sev = round(pred_sev[0], 2)
+    out_obs = round(pred_obs[0], 2)
+    out_ins = round(pred_ins[0], 2)
+    out_thr = round(pred_thr[0], 2)
+    out_ide = round(pred_ide[0], 2)
+
+    print(out_tox)
+
+    return render_template('tab_page.html',
+                           data='You Entered:' + user_input,
+                           pred_tox='Prob (Toxic): {}'.format(out_tox),
+                           pred_sev='Prob (Severe Toxic): {}'.format(out_sev),
+                           pred_obs='Prob (Obscene): {}'.format(out_obs),
+                           pred_ins='Prob (Insult): {}'.format(out_ins),
+                           pred_thr='Prob (Threat): {}'.format(out_thr),
+                           pred_ide='Prob (Identity Hate): {}'.format(out_ide)
                            )
 
 
