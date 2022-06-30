@@ -48,7 +48,7 @@ def predict():
     # Take a string input from user
 
     user_input = request.form['text']
-    # data = [user_input]
+
 
     url_data = urlparse.urlparse(user_input)
     query = urlparse.parse_qs(url_data.query)
@@ -61,7 +61,10 @@ def predict():
     results_tally = {"Toxic": 0, 'Severe Toxic': 0, 'Obscene': 0,
                      'Insult': 0, 'Threat': 0, 'Identity Hate': 0, 'Non Toxic': 0}
 
+    non_toxic_comments=[]
+
     for index, row in df['Comment'].items():
+        row_unedit=row
         row = [row]
         vect = tox.transform(row)
         pred_tox = tox_model.predict_proba(vect)[:, 1]
@@ -104,29 +107,16 @@ def predict():
 
         result_values = list(results.values())
 
-        if all(i <= 0.30 for i in result_values):
+        if all(i <= 0.50 for i in result_values):
             category = 'Non Toxic'
             results_tally['Non Toxic'] += 1
+            non_toxic_comments.append(row_unedit)
         else:
             category = max(zip(results.values(), results.keys()))[1]
             results_tally[category] += 1
 
     return render_template('index_toxic.html',
                            data='You Entered:' + user_input,
-                           pred_tox='Prob (Toxic): {}'.format(
-                               results_tally['Toxic']),
-                           pred_sev='Prob (Severe Toxic): {}'.format(
-                               results_tally['Severe Toxic']),
-                           pred_obs='Prob (Obscene): {}'.format(
-                               results_tally['Obscene']),
-                           pred_ins='Prob (Insult): {}'.format(
-                               results_tally['Insult']),
-                           pred_thr='Prob (Threat): {}'.format(
-                               results_tally['Threat']),
-                           pred_ide='Prob (Identity Hate): {}'.format(
-                               results_tally['Identity Hate']),
-                           category='Prob (Non Toxic): {}'.format(
-                               results_tally['Non Toxic']),
                            pred_tox_num=results_tally['Toxic'],
                            pred_sev_num=results_tally['Severe Toxic'],
                            pred_obs_num=results_tally['Obscene'],
@@ -136,7 +126,7 @@ def predict():
                            pred_non_num=results_tally['Non Toxic'],
                            thumbnail=thumbnail,
                            title=title,
-
+                           comments=non_toxic_comments[1:11]
                            )
 
 
@@ -188,7 +178,7 @@ def predict_text():
 
     result_values = list(results.values())
 
-    if all(i <= 0.30 for i in result_values):
+    if all(i <= 0.50 for i in result_values):
         category = 'Non Toxic'
         print(category)
     else:
@@ -197,12 +187,12 @@ def predict_text():
 
     return render_template('text_only.html',
                            data='You Entered: ' + user_input,
-                           pred_tox='Prob (Toxic): {}'.format(out_tox),
-                           pred_sev='Prob (Severe Toxic): {}'.format(out_sev),
-                           pred_obs='Prob (Obscene): {}'.format(out_obs),
-                           pred_ins='Prob (Insult): {}'.format(out_ins),
-                           pred_thr='Prob (Threat): {}'.format(out_thr),
-                           pred_ide='Prob (Identity Hate): {}'.format(out_ide),
+                           pred_tox='Probability of Toxic: {}'.format(out_tox),
+                           pred_sev='Probability of Severe Toxic: {}'.format(out_sev),
+                           pred_obs='Probability of Obscene: {}'.format(out_obs),
+                           pred_ins='Probability of Insult: {}'.format(out_ins),
+                           pred_thr='Probability of Threat: {}'.format(out_thr),
+                           pred_ide='Probability of Identity Hate: {}'.format(out_ide),
                            category=category)
 
 

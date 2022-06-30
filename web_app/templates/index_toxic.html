@@ -43,7 +43,7 @@
     <div class="chart">
     <canvas id="doughnutChart" ></canvas>
     </div>
-    {% endif %}
+    
     <script>
       var ctx = document.getElementById("doughnutChart").getContext("2d");
       var doughnutChart = new Chart(ctx, {
@@ -96,7 +96,11 @@
         }
       })
     </script>
-    
+    <h2> Non-Toxic Comments</h2>
+    {% for comment in comments %}
+    {{comment}}<br>
+    {% endfor %}
+    {% endif %}
 
 
 
