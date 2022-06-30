@@ -36,7 +36,8 @@
 
 
     {% if title %}
-    <img src={{thumbnail}} style="width:400px;"><br><br>
+    <a href="{{user_link}}">
+    <img class="img" src={{thumbnail}}  href= style="width:600px;"><br><br></a>
     <h3>Video Title: </h3>
       <h3><strong>{{title}}</strong></h3><br>
     
@@ -89,18 +90,48 @@
           'rgb(53, 133, 139)',
           'rgb(79, 189, 186)'
           ],
-          
+    
           }]
 
 
         }
       })
     </script>
+
+  
+
+  <div class="comments-container">
     <h2> Non-Toxic Comments</h2>
+  <div class="row">
     {% for comment in comments %}
-    {{comment}}<br>
-    {% endfor %}
-    {% endif %}
+    <div class="col-md-6 p-2">
+        <div class="nontoxic card border-dark mb-3">
+          <div class="card-block">
+            <p class="card-text">{{comment}}</p>
+          </div>
+          </div>
+        </div>
+        {% endfor %}
+          {% endif %} 
+       
+           
+        </div>
+        
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    
 
 
 

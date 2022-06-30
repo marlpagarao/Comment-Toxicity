@@ -48,7 +48,7 @@ def predict():
     # Take a string input from user
 
     user_input = request.form['text']
-
+    user_link = user_input
 
     url_data = urlparse.urlparse(user_input)
     query = urlparse.parse_qs(url_data.query)
@@ -61,10 +61,10 @@ def predict():
     results_tally = {"Toxic": 0, 'Severe Toxic': 0, 'Obscene': 0,
                      'Insult': 0, 'Threat': 0, 'Identity Hate': 0, 'Non Toxic': 0}
 
-    non_toxic_comments=[]
+    non_toxic_comments = []
 
     for index, row in df['Comment'].items():
-        row_unedit=row
+        row_unedit = row
         row = [row]
         vect = tox.transform(row)
         pred_tox = tox_model.predict_proba(vect)[:, 1]
@@ -126,7 +126,8 @@ def predict():
                            pred_non_num=results_tally['Non Toxic'],
                            thumbnail=thumbnail,
                            title=title,
-                           comments=non_toxic_comments[1:11]
+                           comments=non_toxic_comments[1:11],
+                           user_link=user_link
                            )
 
 
@@ -188,11 +189,16 @@ def predict_text():
     return render_template('text_only.html',
                            data='You Entered: ' + user_input,
                            pred_tox='Probability of Toxic: {}'.format(out_tox),
-                           pred_sev='Probability of Severe Toxic: {}'.format(out_sev),
-                           pred_obs='Probability of Obscene: {}'.format(out_obs),
-                           pred_ins='Probability of Insult: {}'.format(out_ins),
-                           pred_thr='Probability of Threat: {}'.format(out_thr),
-                           pred_ide='Probability of Identity Hate: {}'.format(out_ide),
+                           pred_sev='Probability of Severe Toxic: {}'.format(
+                               out_sev),
+                           pred_obs='Probability of Obscene: {}'.format(
+                               out_obs),
+                           pred_ins='Probability of Insult: {}'.format(
+                               out_ins),
+                           pred_thr='Probability of Threat: {}'.format(
+                               out_thr),
+                           pred_ide='Probability of Identity Hate: {}'.format(
+                               out_ide),
                            category=category)
 
 
