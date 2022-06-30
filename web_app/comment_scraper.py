@@ -80,7 +80,7 @@ def scrape_comments_with_replies(video_id):
     print(sql_vids.shape)
     return sql_vids
 
-   
+
     
 
 
