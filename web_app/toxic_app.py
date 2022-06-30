@@ -10,7 +10,7 @@ import pickle
 import numpy as np
 import pandas as pd
 import urllib.parse as urlparse
-from comment_scraper import scrape_comments_with_replies,get_video_thumbnail,get_video_title
+from comment_scraper import scrape_comments_with_replies, get_video_thumbnail, get_video_title
 
 app = Flask(__name__)
 
@@ -54,9 +54,8 @@ def predict():
     query = urlparse.parse_qs(url_data.query)
     user_input = query["v"][0]
 
-
-    thumbnail=get_video_thumbnail(user_input)
-    title=get_video_title(user_input)
+    thumbnail = get_video_thumbnail(user_input)
+    title = get_video_title(user_input)
     df = scrape_comments_with_replies(user_input)
 
     results_tally = {"Toxic": 0, 'Severe Toxic': 0, 'Obscene': 0,
@@ -137,7 +136,7 @@ def predict():
                            pred_non_num=results_tally['Non Toxic'],
                            thumbnail=thumbnail,
                            title=title,
-                           
+
                            )
 
 
