@@ -81,7 +81,7 @@ def scrape_comments_with_replies(video_id):
     return sql_vids
 
 
-    
+
 
 
 #scrape_comments_with_replies('paVsIKxTE_g')

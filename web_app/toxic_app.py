@@ -36,7 +36,7 @@ def home():
     return render_template('index_toxic.html')
 
 @app.route("/text")
-def tab():
+def text():
     return render_template('text_only.html')
 
 
@@ -135,7 +135,7 @@ def predict():
                            )
 
 @app.route("/comment", methods=['POST','GET'])
-def get():
+def predict_text():
 
     # Take a string input from user
     user_input = request.form['text']
@@ -159,24 +159,52 @@ def get():
     vect = ide.transform(data)
     pred_ide = ide_model.predict_proba(vect)[:, 1]
 
+    results={"Toxic":[],'Severe Toxic':[],'Obscene':[],'Insult':[],'Threat':[],'Identity Hate':[]}
+
+
     out_tox = round(pred_tox[0], 2)
+    results['Toxic']=out_tox
+
     out_sev = round(pred_sev[0], 2)
+    results['Severe Toxic']=out_sev
+
     out_obs = round(pred_obs[0], 2)
+    results['Obscene']=out_obs
+
     out_ins = round(pred_ins[0], 2)
+    results['Insult']=out_ins
+
     out_thr = round(pred_thr[0], 2)
+    results['Threat']=out_thr
+
     out_ide = round(pred_ide[0], 2)
+    results['Identity Hate']=out_ide
 
-    print(out_tox)
 
-    return render_template('tab_page.html',
+
+
+    result_values= list(results.values())
+
+    if all( i<=0.30 for i in result_values):
+        category='Non Toxic'
+        print(category)
+    else:
+        category=max(zip(results.values(), results.keys()))[1]
+        print(category)
+    
+
+
+
+    return render_template('text_only.html',
                            data='You Entered:' + user_input,
                            pred_tox='Prob (Toxic): {}'.format(out_tox),
                            pred_sev='Prob (Severe Toxic): {}'.format(out_sev),
                            pred_obs='Prob (Obscene): {}'.format(out_obs),
                            pred_ins='Prob (Insult): {}'.format(out_ins),
                            pred_thr='Prob (Threat): {}'.format(out_thr),
-                           pred_ide='Prob (Identity Hate): {}'.format(out_ide)
-                           )
+                           pred_ide='Prob (Identity Hate): {}'.format(out_ide),
+                           category=category)
+
 
 
 # Server reloads itself if code changes so no need to keep restarting:

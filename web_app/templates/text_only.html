@@ -19,7 +19,7 @@
     <h1>Is your Comment Toxic?</h1>
 
      <!-- Main Input For Receiving Query to our ML -->
-    <form action="{{ url_for('get')}}"method="POST">
+    <form action="{{ url_for('predict_text')}}"method="POST">
     <a href="/">Youtube Comments</a>    
     <input id='text' type="text" name="text" placeholder="Enter your text" required="required" size="25" style="font-size:25px;"/>
     <input type="submit" class="fadeIn fourth" value="Predict">
@@ -32,7 +32,9 @@
     {{ pred_obs }} <br>
     {{ pred_ins }} <br>
     {{ pred_thr }} <br>
-    {{ pred_ide }}
+    {{ pred_ide }} <br>
+
+    {{ category }}
     </h3>
     </div>
 </div>
