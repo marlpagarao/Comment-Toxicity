@@ -203,4 +203,5 @@ def predict_text():
 
 
 # Server reloads itself if code changes so no need to keep restarting:
-app.run(debug=False)
+if __name__ == '__main__':
+    app.run(debug=False)
