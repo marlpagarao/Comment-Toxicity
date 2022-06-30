@@ -35,11 +35,10 @@ ide_model = pickle.load(open("identity_hate_model.pkl", "rb"))
 def home():
     return render_template('index_toxic.html')
 
+
 @app.route("/text")
 def text():
     return render_template('text_only.html')
-
-
 
 
 @app.route("/predict", methods=['POST'])
@@ -134,7 +133,8 @@ def predict():
                            pred_non_num=results_tally['Non Toxic']
                            )
 
-@app.route("/comment", methods=['POST','GET'])
+
+@app.route("/comment", methods=['POST', 'GET'])
 def predict_text():
 
     # Take a string input from user
@@ -159,44 +159,38 @@ def predict_text():
     vect = ide.transform(data)
     pred_ide = ide_model.predict_proba(vect)[:, 1]
 
-    results={"Toxic":[],'Severe Toxic':[],'Obscene':[],'Insult':[],'Threat':[],'Identity Hate':[]}
-
+    results = {"Toxic": [], 'Severe Toxic': [], 'Obscene': [],
+               'Insult': [], 'Threat': [], 'Identity Hate': []}
 
     out_tox = round(pred_tox[0], 2)
-    results['Toxic']=out_tox
+    results['Toxic'] = out_tox
 
     out_sev = round(pred_sev[0], 2)
-    results['Severe Toxic']=out_sev
+    results['Severe Toxic'] = out_sev
 
     out_obs = round(pred_obs[0], 2)
-    results['Obscene']=out_obs
+    results['Obscene'] = out_obs
 
     out_ins = round(pred_ins[0], 2)
-    results['Insult']=out_ins
+    results['Insult'] = out_ins
 
     out_thr = round(pred_thr[0], 2)
-    results['Threat']=out_thr
+    results['Threat'] = out_thr
 
     out_ide = round(pred_ide[0], 2)
-    results['Identity Hate']=out_ide
+    results['Identity Hate'] = out_ide
 
+    result_values = list(results.values())
 
-
-
-    result_values= list(results.values())
-
-    if all( i<=0.30 for i in result_values):
-        category='Non Toxic'
+    if all(i <= 0.30 for i in result_values):
+        category = 'Non Toxic'
         print(category)
     else:
-        category=max(zip(results.values(), results.keys()))[1]
+        category = max(zip(results.values(), results.keys()))[1]
         print(category)
-    
-
-
 
     return render_template('text_only.html',
-                           data='You Entered:' + user_input,
+                           data='You Entered: ' + user_input,
                            pred_tox='Prob (Toxic): {}'.format(out_tox),
                            pred_sev='Prob (Severe Toxic): {}'.format(out_sev),
                            pred_obs='Prob (Obscene): {}'.format(out_obs),
@@ -204,7 +198,6 @@ def predict_text():
                            pred_thr='Prob (Threat): {}'.format(out_thr),
                            pred_ide='Prob (Identity Hate): {}'.format(out_ide),
                            category=category)
-
 
 
 # Server reloads itself if code changes so no need to keep restarting:

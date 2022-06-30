@@ -23,6 +23,9 @@ html {
   
   /* STRUCTURE */
   
+  form{
+	padding: 20px;
+  }
   .wrapper {
 	display: flex;
 	align-items: center;
@@ -44,6 +47,7 @@ html {
 	-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
 	box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
 	text-align: center;
+	margin: auto;
 
   }
   
@@ -77,7 +81,7 @@ html {
 	background-color: #388087;
 	border: none;
 	color: white;
-	padding: 20px 50px;
+	padding: 10px 30px;
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
@@ -87,7 +91,7 @@ html {
 	box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
 	-webkit-border-radius: 5px 5px 5px 5px;
 	border-radius: 5px 5px 5px 5px;
-	margin: 5px 20px 40px 20px;
+	margin: 15px 20px 40px 20px;
 	/*-webkit-transition: all 0.3s ease-in-out;
 	-moz-transition: all 0.3s ease-in-out;
 	-ms-transition: all 0.3s ease-in-out;
@@ -112,11 +116,11 @@ html {
 	background-color: #f6f6f6;
 	border: none;
 	color: #0d0d0d;
-	padding: 15px 32px;
+	padding: 5px 23px;
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
-	font-size: 16px;
+	font-size: 20px;
 	margin: 5px;
 	width: 85%;
 	border: 2px solid #f6f6f6;
@@ -139,13 +143,21 @@ html {
   }
   
 .chart{
-	width: 60%;
+	width: 80%;
 	margin:auto;
 }
 
   
-  
+  .card-header{
+	background-color: #ffff !important;
+	border-bottom: 0px !important;
+	padding-right: 20px !important;
+	margin:auto !important;
+  }
 
+.card-header-tabs{
+	padding-left: 51px !important;
+}
   /* ANIMATIONS
   
   
@@ -263,3 +275,5 @@ html {
   * {
 	box-sizing: border-box;
   }
+
+  
