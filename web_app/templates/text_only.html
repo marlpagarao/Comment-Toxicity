@@ -30,6 +30,7 @@
     <form action="{{ url_for('predict_text')}}"method="POST">   
     <input id='text' type="text" name="text" placeholder="Enter your text" required="required" size="25" />
     <input type="submit" class="fadeIn fourth" value="Predict">
+    {% if data %}
     <div class = "prediction">
       <p>
         {{ data }} <br><br>
@@ -43,6 +44,7 @@
         <h3><strong>{{ category }}</strong></h3>
         </p>
       </div>
+      {% endif %}
     </form>
     
     

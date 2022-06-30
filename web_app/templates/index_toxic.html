@@ -35,9 +35,16 @@
     <input type="submit" class="fadeIn fourth" value="Predict">
     </form>
 
+
+    {% if title %}
+    <img src={{thumbnail}} style="width:400px;"><br><br>
+    <h3>Video Title: </h3>
+      <h3><strong>{{title}}</strong></h3><br>
+    
     <div class="chart">
-    <canvas id="doughnutChart" width="200" height="100"></canvas>
+    <canvas id="doughnutChart" ></canvas>
     </div>
+    {% endif %}
     <script>
       var ctx = document.getElementById("doughnutChart").getContext("2d");
       var doughnutChart = new Chart(ctx, {
@@ -90,11 +97,13 @@
         }
       })
     </script>
+    
 
 
 
     </div>
     </div>
+
 </div>
 
 </body>

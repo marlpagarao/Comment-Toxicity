@@ -80,6 +80,25 @@ def scrape_comments_with_replies(video_id):
     print(sql_vids.shape)
     return sql_vids
 
+def get_video_thumbnail(video_id):
+    thumbnail='https://i.ytimg.com/vi/'+video_id+'/maxresdefault.jpg'
+    return thumbnail
+
+def get_video_title(video_id):
+    import urllib.request
+    import json
+    import urllib
+
+    params = {"format": "json", "url": "https://www.youtube.com/watch?v=%s" % video_id}
+    url = "https://www.youtube.com/oembed"
+    query_string = urllib.parse.urlencode(params)
+    url = url + "?" + query_string
+
+    with urllib.request.urlopen(url) as response:
+        response_text = response.read()
+        data = json.loads(response_text.decode())
+        return(data['title'])
+
 
 
 
