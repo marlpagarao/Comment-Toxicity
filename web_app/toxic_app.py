@@ -35,13 +35,11 @@ ide_model = pickle.load(open("identity_hate_model.pkl", "rb"))
 def home():
     return render_template('index_toxic.html')
 
-@app.route("/tab")
+@app.route("/text")
 def tab():
-    return render_template('tab_page.html')
+    return render_template('text_only.html')
 
-@app.route("/back")
-def back():
-    return render_template('home_page.html')
+
 
 
 @app.route("/predict", methods=['POST'])
